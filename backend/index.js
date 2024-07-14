@@ -14,8 +14,8 @@ class Aluno {
         }];
     }
 
-    cadastroDisciplinasAluno(aluno){
-        console.log(alunos[aluno].nome);
+    cadastroDisciplinasAluno(alunoID){
+        console.log(alunos[alunoID].nome);
     }
 
 }
@@ -32,6 +32,11 @@ function cadastrarAlunos(nome, idade) {
     alunos.push(new Aluno(nome, idade));
 }
 function exibirAlunos() {
+    if(alunos.length == 0){
+        console.log("Nenhum aluno cadastrado.");
+        return;
+    }
+    console.log("***Exibindo alunos***");
     for(let a = 0; a < alunos.length; a++){
         console.log(alunos[a].nome);
     };
@@ -40,6 +45,11 @@ function cadastrarDisciplinas(disciplina) {
     alunos.push(new Disciplina(disciplina));
 }
 function exibirDisciplinas() {
+    if(disciplinas.length == 0){
+        console.log("Nenhuma disciplina cadastrada.");
+        return;
+    }
+    console.log("***Exibindo disciplinas***");
     for(let d = 0; d < disciplinas.length; d++){
         console.log(disciplinas[d].disciplina);
     };
@@ -69,7 +79,6 @@ while (!sair) {
                         cadastrarAlunos(nome, idade);
                     break;
                     case 2:
-                        console.log("***Exibindo alunos***");
                         exibirAlunos();
                     break;
                     case 3:
@@ -79,7 +88,8 @@ while (!sair) {
                             console.log(`${alunoID} - ${alunos[a].nome}`);
                             alunoID++;
                         }
-                        let alunoEscolhido = entrada("Digite o número do aluno selecionado: ");
+                        let alunoEscolhido = parseInt(entrada("Digite o número do aluno selecionado: ")) - 1;
+                        alunos[alunoEscolhido].cadastroDisciplinasAluno(alunoEscolhido);
                     break;
                     case 4:
                         console.log("Encerrando sistema.");
@@ -103,7 +113,6 @@ while (!sair) {
                         cadastrarDisciplinas(disciplina);
                     break;
                     case 2:
-                        console.log("***Exibindo disciplinas***");
                         exibirDisciplinas();
                     break;
                     case 3:
