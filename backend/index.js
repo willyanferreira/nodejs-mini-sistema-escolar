@@ -14,17 +14,17 @@ class Aluno {
         }];
     }
 
-    cadastroDisciplinasAluno(alunoID){
+    cadastroDisciplinasAluno(alunoID) {
         console.log(alunos[alunoID].nome);
     }
 
 }
 
-class Disciplina{
-    constructor(disciplina){
+class Disciplina {
+    constructor(disciplina) {
         this.disciplina = disciplina;
         let id = disciplinas.length;
-        disciplinas.push({'id': id + 1, 'disciplina': disciplina});
+        disciplinas.push({ 'id': id + 1, 'disciplina': disciplina });
     }
 }
 
@@ -32,12 +32,12 @@ function cadastrarAlunos(nome, idade) {
     alunos.push(new Aluno(nome, idade));
 }
 function exibirAlunos() {
-    if(alunos.length == 0){
+    if (alunos.length == 0) {
         console.log("Nenhum aluno cadastrado.");
         return;
     }
     console.log("***Exibindo alunos***");
-    for(let a = 0; a < alunos.length; a++){
+    for (let a = 0; a < alunos.length; a++) {
         console.log(alunos[a].nome);
     };
 }
@@ -45,90 +45,104 @@ function cadastrarDisciplinas(disciplina) {
     alunos.push(new Disciplina(disciplina));
 }
 function exibirDisciplinas() {
-    if(disciplinas.length == 0){
+    if (disciplinas.length == 0) {
         console.log("Nenhuma disciplina cadastrada.");
         return;
     }
     console.log("***Exibindo disciplinas***");
-    for(let d = 0; d < disciplinas.length; d++){
+    for (let d = 0; d < disciplinas.length; d++) {
         console.log(disciplinas[d].disciplina);
     };
 }
 
 let sair = false;
-
-while (!sair) {
-
-    console.log("1. Gerenciar Alunos");
-    console.log("2. Gerenciar Disciplinas");
-    console.log("3. Sair");
-    let menu = parseInt(entrada("Escolha uma opção: "));
-    switch (menu) {
-        case 1:
-            while(!sair){
-                console.log("1. Cadastrar Aluno");
-                console.log("2. Exibir Alunos");
-                console.log("3. Cadastrar Disciplina para Aluno");
-                console.log("4. Sair");
-                let submenu = parseInt(entrada("Escolha uma opçõa: "));
-                switch(submenu){
-                    case 1:
-                        console.log("***Cadastro de aluno***");
-                        let nome = entrada("Digite o nome do aluno: ");
-                        let idade = entrada("Digite a idade do aluno: ");
-                        cadastrarAlunos(nome, idade);
-                    break;
-                    case 2:
-                        exibirAlunos();
-                    break;
-                    case 3:
-                        console.log("***Exibindo alunos cadastrados***");
-                        let alunoID = 1;
-                        for(let a = 0; a < alunos.length; a++){
-                            console.log(`${alunoID} - ${alunos[a].nome}`);
-                            alunoID++;
-                        }
-                        let alunoEscolhido = parseInt(entrada("Digite o número do aluno selecionado: ")) - 1;
-                        alunos[alunoEscolhido].cadastroDisciplinasAluno(alunoEscolhido);
-                    break;
-                    case 4:
-                        console.log("Encerrando sistema.");
-                        sair = true;
-                    break;
-                    default:
-                        console.log("Opção inválida.");
+function menuIniciar() {
+    while (!sair) {
+        console.log("1. Gerenciar Alunos");
+        console.log("2. Gerenciar Disciplinas");
+        console.log("3. Sair");
+        let menu = parseInt(entrada("Escolha uma opção: "));
+        switch (menu) {
+            case 1:
+                console.clear();
+                menuAlunos();
+                break;
+            case 2:
+                while (!sair) {
+                    console.log("1. Cadastrar Disciplina");
+                    console.log("2. Exibir Disciplinas");
+                    console.log("3. Sair");
+                    let submenu = parseInt(entrada("Escolha uma opçõa: "));
+                    switch (submenu) {
+                        case 1:
+                            console.log("***Cadastro de disciplina***");
+                            let disciplina = entrada("Digite o nome da disciplina: ");
+                            cadastrarDisciplinas(disciplina);
+                            break;
+                        case 2:
+                            exibirDisciplinas();
+                            break;
+                        case 3:
+                            console.log("Encerrando sistema.");
+                            sair = true;
+                            break;
+                        default:
+                            console.log("Opção inválida.");
+                    }
                 }
-            }
-            break;
-        case 2:
-            while(!sair){
-                console.log("1. Cadastrar Disciplina");
-                console.log("2. Exibir Disciplinas");
-                console.log("3. Sair");
-                let submenu = parseInt(entrada("Escolha uma opçõa: "));
-                switch(submenu){
-                    case 1:
-                        console.log("***Cadastro de disciplina***");
-                        let disciplina = entrada("Digite o nome da disciplina: ");
-                        cadastrarDisciplinas(disciplina);
-                    break;
-                    case 2:
-                        exibirDisciplinas();
-                    break;
-                    case 3:
-                        console.log("Encerrando sistema.");
-                        sair = true;
-                    break;
-                    default:
-                        console.log("Opção inválida.");
-                }
-            }
-            break;
-        case 3:
-            sair = true;
-            console.log("Encerrando sistema.");
-            break;
-        default:
-            console.log("Opção inválida");
+                break;
+            case 3:
+                sair = true;
+                console.log("Encerrando sistema.");
+                break;
+            default:
+                console.log("Opção inválida");
+        }
     }
 }
+function menuAlunos() {
+    while (!sair) {
+        console.log("1. Cadastrar Aluno");
+        console.log("2. Exibir Alunos");
+        console.log("3. Cadastrar Disciplina para Aluno");
+        console.log("4. Voltar");
+        console.log("5. Sair");
+        let submenu = parseInt(entrada("Escolha uma opçõa: "));
+        switch (submenu) {
+            case 1:
+                console.clear();
+                console.log("***Cadastro de aluno***");
+                let nome = entrada("Digite o nome do aluno: ");
+                let idade = entrada("Digite a idade do aluno: ");
+                cadastrarAlunos(nome, idade);
+                break;
+            case 2:
+                console.clear();
+                exibirAlunos();
+                break;
+            case 3:
+                console.clear();
+                console.log("***Exibindo alunos cadastrados***");
+                let alunoID = 1;
+                for (let a = 0; a < alunos.length; a++) {
+                    console.log(`${alunoID} - ${alunos[a].nome}`);
+                    alunoID++;
+                }
+                let alunoEscolhido = parseInt(entrada("Digite o número do aluno selecionado: ")) - 1;
+                alunos[alunoEscolhido].cadastroDisciplinasAluno(alunoEscolhido);
+                break;
+            case 4:
+                console.clear();
+                menuIniciar();
+                break;
+            case 5:
+                console.log("Encerrando sistema.");
+                sair = true;
+                break;
+            default:
+                console.log("Opção inválida.");
+        }
+    }
+}
+
+menuIniciar();
