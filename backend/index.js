@@ -34,6 +34,7 @@ class Disciplina {
 
 function cadastrarAlunos(nome, idade) {
     alunos.push(new Aluno(nome, idade));
+    console.log("Aluno cadastrado.\n");
 }
 
 function exibirAlunos() {
@@ -49,6 +50,7 @@ function exibirAlunos() {
 
 function cadastrarDisciplinas(disciplina) {
     new Disciplina(disciplina);
+    console.log("Disciplina cadastrada.\n");
 }
 
 function exibirDisciplinas() {
@@ -63,8 +65,20 @@ function exibirDisciplinas() {
     };
 }
 
+function selecionarAluno() {
+    console.log("***Exibindo alunos cadastrados***");
+    let alunoID = 1;
+    for (let a = 0; a < alunos.length; a++) {
+        console.log(`${alunoID} - ${alunos[a].nome}`);
+        alunoID++;
+    }
+    let alunoEscolhido = parseInt(entrada("Digite o número do aluno selecionado: ")) - 1;
+    return alunoEscolhido;
+}
+
 let sair = false;
 function menuIniciar() {
+    console.clear();
     console.log("--- INÍCIO ---");
     while (!sair) {
         console.log("1. Gerenciar Alunos");
@@ -96,8 +110,9 @@ function menuAlunos() {
         console.log("1. Cadastrar Aluno");
         console.log("2. Exibir Alunos");
         console.log("3. Cadastrar Disciplina para Aluno");
-        console.log("4. Voltar");
-        console.log("5. Sair");
+        console.log("4. Cadastrar Nota para Disciplina");
+        console.log("5. Voltar");
+        console.log("6. Sair");
         let submenu = parseInt(entrada("Escolha uma opçõa: "));
         switch (submenu) {
             case 1:
@@ -113,20 +128,18 @@ function menuAlunos() {
                 break;
             case 3:
                 console.clear();
-                console.log("***Exibindo alunos cadastrados***");
-                let alunoID = 1;
-                for (let a = 0; a < alunos.length; a++) {
-                    console.log(`${alunoID} - ${alunos[a].nome}`);
-                    alunoID++;
-                }
-                let alunoEscolhido = parseInt(entrada("Digite o número do aluno selecionado: ")) - 1;
+                let alunoEscolhido = selecionarAluno();
                 alunos[alunoEscolhido].cadastroDisciplinasAluno(alunoEscolhido);
                 break;
             case 4:
                 console.clear();
-                menuIniciar();
+                console.log("Aluno selecionado foi: " + alunos[selecionarAluno()].nome);
                 break;
             case 5:
+                console.clear();
+                menuIniciar();
+                break;
+            case 6:
                 console.log("Encerrando sistema.\n");
                 sair = true;
                 break;
@@ -146,6 +159,7 @@ function menuDisciplinas() {
         let submenu = parseInt(entrada("Escolha uma opçõa: "));
         switch (submenu) {
             case 1:
+                console.clear();
                 console.log("***Cadastro de disciplina***");
                 let disciplina = entrada("Digite o nome da disciplina: ");
                 cadastrarDisciplinas(disciplina);
