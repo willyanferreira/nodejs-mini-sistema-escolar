@@ -1,38 +1,16 @@
 const entrada = require("prompt-sync")();
 const alunos = [];
-const disciplinas = [];
-
-class Aluno {
-    constructor(nome, idade) {
-        this.nome = nome;
-        this.idade = idade;
-        this.disciplinas = [];
-    }
-
-    cadastroDisciplinasAluno(alunoID) {
-        console.clear();
-        console.log("***Exibindo disciplinas cadastradas***");
-        let disciplinaID = 1;
-        for (let d = 0; d < disciplinas.length; d++) {
-            console.log(`${disciplinaID} - ${disciplinas[d].disciplina}`);
-            disciplinaID++;
-        }
-        let disciplinaSelecionada = parseInt(entrada("Digite o número da disciplina selecionada: ")) - 1;
-        alunos[alunoID].disciplinas.push(disciplinas[disciplinaSelecionada]);
-    }
-}
-
-class Disciplina {
-    constructor(disciplina) {
-        this.disciplina = disciplina;
-        let id = disciplinas.length;
-        disciplinas.push({ 'id': id + 1, 'disciplina': disciplina });
-    }
-}
+const disciplinas = []
 
 function cadastrarAlunos(nome, idade) {
-    alunos.push(new Aluno(nome, idade));
+    alunos.push({ nome, idade });
     console.log("Aluno cadastrado.\n");
+}
+
+function cadastrarDisciplinas(disciplina) {
+    let id = disciplinas.length;
+    disciplinas.push({ 'id': id + 1, 'disciplina': disciplina });
+    console.log("Disciplina cadastrada.\n");
 }
 
 function exibirAlunos() {
@@ -45,15 +23,12 @@ function exibirAlunos() {
         console.log(`--- Aluno ${a + 1} ---`);
         console.log(`Nome: ${alunos[a].nome}`);
         console.log(`Idade: ${alunos[a].idade}`);
-        for (let d = 0; d < alunos[a].disciplinas.length; d++) {
-            console.log(`Disciplina: ${alunos[a].disciplinas[d].disciplina}\nNotas: ${alunos[a].disciplinas[d].notas ? alunos[a].disciplinas[d].notas : 'Nennhuma nota cadastrada.'}\nFaltas: ${alunos[a].disciplinas[d].faltas ? alunos[a].disciplinas[d].faltas : "Aluno sem faltas"}`);
+        if (alunos[a].disciplinas) {
+            for (let d = 0; d < alunos[a].disciplinas.length; d++) {
+                console.log(`Disciplina: ${alunos[a].disciplinas[d].disciplina}\nNotas: ${alunos[a].disciplinas[d].notas ? alunos[a].disciplinas[d].notas : 'Nennhuma nota cadastrada.'}\nFaltas: ${alunos[a].disciplinas[d].faltas ? alunos[a].disciplinas[d].faltas : "Aluno sem faltas"}`);
+            }
         }
     };
-}
-
-function cadastrarDisciplinas(disciplina) {
-    new Disciplina(disciplina);
-    console.log("Disciplina cadastrada.\n");
 }
 
 function exibirDisciplinas() {
@@ -68,6 +43,36 @@ function exibirDisciplinas() {
     };
 }
 
+function cadastroDisciplinasAluno(aluno) {
+    console.clear();
+    console.log("***Exibindo disciplinas cadastradas***");
+    let disciplinaID = 1;
+    for (let d = 0; d < disciplinas.length; d++) {
+        console.log(`${disciplinaID} - ${disciplinas[d].disciplina}`);
+        disciplinaID++;
+    }
+    let disciplinaSelecionada = parseInt(entrada("Digite o número da disciplina selecionada: ")) - 1;
+    if (!alunos[aluno].disciplinas) {
+        alunos[aluno].disciplinas = [];
+    }
+    alunos[aluno].disciplinas.push({'id': disciplinas[disciplinaSelecionada].id , 'disciplina': disciplinas[disciplinaSelecionada].disciplina})
+}
+
+function cadastroNotasDisciplina(aluno) {
+    console.clear();
+    console.log("***Exibindo disciplinas do aluno***");
+    let disciplinaSelecionada = exibirDisciplinasAluno(aluno);
+    if (!alunos[aluno].disciplinas[disciplinaSelecionada].notas) {
+        alunos[aluno].disciplinas[disciplinaSelecionada].notas = [];
+    }
+    let notas = parseInt(entrada("Digite a quantidade de notas: "));
+    for (let n = 0; n < notas; n++) {
+        let nota = parseFloat(entrada(`Digite a ${n + 1}a nota: `));
+        alunos[aluno].disciplinas[disciplinaSelecionada].notas.push(nota);
+    }
+
+}
+
 function selecionarAluno() {
     console.log("***Exibindo alunos cadastrados***");
     let alunoID = 1;
@@ -77,6 +82,23 @@ function selecionarAluno() {
     }
     let alunoEscolhido = parseInt(entrada("Digite o número do aluno selecionado: ")) - 1;
     return alunoEscolhido;
+}
+
+function exibirDisciplinasAluno(alunoID) {
+    if (alunos.length == 0) {
+        console.log("Nenhum aluno cadastrado.\n");
+        return;
+    }
+    let disciplinaID = 1;
+    for (let d = 0; d < alunos[alunoID].disciplinas.length; d++) {
+        console.log(`${disciplinaID} - ${alunos[alunoID].disciplinas[d].disciplina}`);
+        disciplinaID++;
+    }
+    let disciplinaSelecionada = parseInt(entrada("Selecione a disciplina que deseja cadastrar a(s) nota(s): ") - 1);
+    // console.log(`Você escolheu: ${alunos[alunoID].disciplinas[disciplinaSelecionada].disciplina}`);
+    return disciplinaSelecionada;
+    // let qtd_faltas = parseInt(entrada("Digite a quantidade de falta(s): "));
+    // alunos[alunoID].disciplinas[disciplinaSelecionada].faltas = qtd_faltas;
 }
 
 let sair = false;
@@ -133,52 +155,20 @@ function menuAlunos() {
                 break;
             case 3:
                 console.clear();
-                var alunoEscolhido = selecionarAluno();
-                alunos[alunoEscolhido].cadastroDisciplinasAluno(alunoEscolhido);
+                {
+                    let alunoEscolhido = selecionarAluno();
+                    cadastroDisciplinasAluno(alunoEscolhido);
+                }
                 break;
             case 4:
                 console.clear();
-                if (alunos.length == 0) {
-                    console.log("Nenhum aluno cadastrado.\n");
-                    return;
-                }
-                var alunoEscolhido1 = selecionarAluno();
-                console.log("Aluno selecionado foi: " + alunos[alunoEscolhido1].nome);
-                console.log("Disciplinas do aluno");
-                var disciplinaID1 = 1;
-                for (let d = 0; d < alunos[alunoEscolhido1].disciplinas.length; d++) {
-                    console.log(`${disciplinaID1} - ${alunos[alunoEscolhido1].disciplinas[d].disciplina}`);
-                    disciplinaID1++;
-                }
-                var disciplinaSelecionada1 = parseInt(entrada("Selecione a disciplina que deseja cadastrar a nota: ") - 1);
-                console.log(`Você escolheu: ${alunos[alunoEscolhido1].disciplinas[disciplinaSelecionada1].disciplina}`);
-                // let notas = alunos[alunoEscolhido].disciplinas.length;
-                let qtd_notas = parseInt(entrada("Digite quantas notas deseja cadastrar: "));
-                alunos[alunoEscolhido1].disciplinas[disciplinaSelecionada1].notas = [];
-                for (let d_a = 0; d_a < qtd_notas; d_a++) {
-                    let nota = parseFloat(entrada(`Digite a ${d_a + 1}ª nota: `));
-                    alunos[alunoEscolhido1].disciplinas[disciplinaSelecionada1].notas.push(nota);
+                {
+                    let alunoEscolhido = selecionarAluno();
+                    cadastroNotasDisciplina(alunoEscolhido);
                 }
                 break;
             case 5:
                 console.clear();
-                if (alunos.length == 0) {
-                    console.log("Nenhum aluno cadastrado.\n");
-                    return;
-                }
-                var alunoEscolhido2 = selecionarAluno();
-                console.log("Aluno selecionado foi: " + alunos[alunoEscolhido2].nome);
-                console.log("Disciplinas do aluno");
-                var disciplinaID2 = 1;
-                for (let d = 0; d < alunos[alunoEscolhido2].disciplinas.length; d++) {
-                    console.log(`${disciplinaID2} - ${alunos[alunoEscolhido2].disciplinas[d].disciplina}`);
-                    disciplinaID2++;
-                }
-                var disciplinaSelecionada2 = parseInt(entrada("Selecione a disciplina que deseja cadastrar a(s) falta(d): ") - 1);
-                console.log(`Você escolheu: ${alunos[alunoEscolhido2].disciplinas[disciplinaSelecionada2].disciplina}`);
-                // let notas = alunos[alunoEscolhido].disciplinas.length;
-                let qtd_faltas = parseInt(entrada("Digite a quantidade de falta(s): "));
-                alunos[alunoEscolhido2].disciplinas[disciplinaSelecionada2].faltas = qtd_faltas;
                 break;
             case 6:
                 console.clear();
