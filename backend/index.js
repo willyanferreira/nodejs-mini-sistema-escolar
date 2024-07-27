@@ -13,7 +13,13 @@ function cadastrarDisciplinas(disciplina) {
     console.log("Disciplina cadastrada.\n");
 }
 
+function esperaUsuario(){
+    entrada("\nPressione ENTER para continuar...");
+    console.clear();
+}
+
 function exibirAlunos() {
+    console.clear();
     if (alunos.length == 0) {
         console.log("Nenhum aluno cadastrado.\n");
         return;
@@ -25,18 +31,19 @@ function exibirAlunos() {
         console.log(`Idade: ${alunos[a].idade}`);
         if (alunos[a].disciplinas) {
             for (let d = 0; d < alunos[a].disciplinas.length; d++) {
-                console.log(`Disciplina: ${alunos[a].disciplinas[d].disciplina}\nNotas: ${alunos[a].disciplinas[d].notas ? alunos[a].disciplinas[d].notas : 'Nennhuma nota cadastrada.'}\nFaltas: ${alunos[a].disciplinas[d].faltas ? alunos[a].disciplinas[d].faltas : "Aluno sem faltas"}`);
+                console.log(`Disciplina: ${alunos[a].disciplinas[d].disciplina}\nNotas: ${alunos[a].disciplinas[d].notas ? alunos[a].disciplinas[d].notas : 'Nennhuma nota cadastrada.'}\nFaltas: ${alunos[a].disciplinas[d].faltas ? alunos[a].disciplinas[d].faltas : "Aluno sem faltas"}\n`);
             }
         }
-    };
+    }
+    esperaUsuario();
 }
 
 function exibirDisciplinas() {
+    console.clear();
     if (disciplinas.length == 0) {
         console.log("Nenhuma disciplina cadastrada.\n");
         return;
     }
-    console.clear();
     console.log("***Exibindo disciplinas***");
     for (let d = 0; d < disciplinas.length; d++) {
         console.log(disciplinas[d]);
@@ -45,6 +52,14 @@ function exibirDisciplinas() {
 
 function cadastroDisciplinasAluno(aluno) {
     console.clear();
+    if (alunos.length == 0) {
+        console.log("Nenhum aluno cadastrado.\n");
+        return;
+    }
+    if (disciplinas.length == 0) {
+        console.log("Nenhuma disciplina cadastrada.\n");
+        return;
+    }
     console.log("***Exibindo disciplinas cadastradas***");
     let disciplinaID = 1;
     for (let d = 0; d < disciplinas.length; d++) {
@@ -55,11 +70,19 @@ function cadastroDisciplinasAluno(aluno) {
     if (!alunos[aluno].disciplinas) {
         alunos[aluno].disciplinas = [];
     }
-    alunos[aluno].disciplinas.push({'id': disciplinas[disciplinaSelecionada].id , 'disciplina': disciplinas[disciplinaSelecionada].disciplina})
+    alunos[aluno].disciplinas.push({ 'id': disciplinas[disciplinaSelecionada].id, 'disciplina': disciplinas[disciplinaSelecionada].disciplina })
 }
 
 function cadastroNotasDisciplina(aluno) {
     console.clear();
+    if (alunos.length == 0) {
+        console.log("Nenhum aluno cadastrado.\n");
+        return;
+    }
+    if (alunos.length < 3) {
+        console.log("Alunos sem disciplinas.\n");
+        return;
+    }
     console.log("***Exibindo disciplinas do aluno***");
     let disciplinaSelecionada = exibirDisciplinasAluno(aluno);
     if (!alunos[aluno].disciplinas[disciplinaSelecionada].notas) {
@@ -74,7 +97,16 @@ function cadastroNotasDisciplina(aluno) {
 }
 
 function selecionarAluno() {
-    console.log("***Exibindo alunos cadastrados***");
+    console.clear();
+    if (alunos.length == 0) {
+        console.log("Nenhum aluno cadastrado.\n");
+        return;
+    }
+    if (disciplinas.length == 0) {
+        console.log("Nenhuma disciplina cadastrada.\n");
+        return;
+    }
+    console.log("***Exibindo  cadastrados***");
     let alunoID = 1;
     for (let a = 0; a < alunos.length; a++) {
         console.log(`${alunoID} - ${alunos[a].nome}`);
@@ -85,6 +117,7 @@ function selecionarAluno() {
 }
 
 function exibirDisciplinasAluno(alunoID) {
+    console.clear();
     if (alunos.length == 0) {
         console.log("Nenhum aluno cadastrado.\n");
         return;
@@ -95,10 +128,7 @@ function exibirDisciplinasAluno(alunoID) {
         disciplinaID++;
     }
     let disciplinaSelecionada = parseInt(entrada("Selecione a disciplina que deseja cadastrar a(s) nota(s): ") - 1);
-    // console.log(`Você escolheu: ${alunos[alunoID].disciplinas[disciplinaSelecionada].disciplina}`);
     return disciplinaSelecionada;
-    // let qtd_faltas = parseInt(entrada("Digite a quantidade de falta(s): "));
-    // alunos[alunoID].disciplinas[disciplinaSelecionada].faltas = qtd_faltas;
 }
 
 let sair = false;
@@ -112,11 +142,9 @@ function menuIniciar() {
         let menu = parseInt(entrada("Escolha uma opção: "));
         switch (menu) {
             case 1:
-                console.clear();
                 menuAlunos();
                 break;
             case 2:
-                console.clear();
                 menuDisciplinas();
                 break;
             case 3:
@@ -130,6 +158,7 @@ function menuIniciar() {
 }
 
 function menuAlunos() {
+    console.clear();
     console.log("--- MENU ALUNOS ---");
     while (!sair) {
         console.log("1. Cadastrar Aluno");
@@ -150,11 +179,9 @@ function menuAlunos() {
                 cadastrarAlunos(nome, idade);
                 break;
             case 2:
-                console.clear();
                 exibirAlunos();
                 break;
             case 3:
-                console.clear();
                 {
                     let alunoEscolhido = selecionarAluno();
                     cadastroDisciplinasAluno(alunoEscolhido);
@@ -171,11 +198,9 @@ function menuAlunos() {
                 console.clear();
                 break;
             case 6:
-                console.clear();
                 console.log("Calculando média");
                 break;
             case 7:
-                console.clear();
                 menuIniciar();
                 break;
             case 8:
@@ -189,6 +214,7 @@ function menuAlunos() {
 }
 
 function menuDisciplinas() {
+    console.clear();
     console.log("--- MENU DISCIPLINAS ---");
     while (!sair) {
         console.log("1. Cadastrar Disciplina");
@@ -204,11 +230,9 @@ function menuDisciplinas() {
                 cadastrarDisciplinas(disciplina);
                 break;
             case 2:
-                console.clear();
                 exibirDisciplinas();
                 break;
             case 3:
-                console.clear();
                 menuIniciar();
                 break;
             case 4:
