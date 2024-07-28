@@ -13,11 +13,6 @@ function cadastrarDisciplinas(disciplina) {
     console.log("Disciplina cadastrada.\n");
 }
 
-function esperaUsuario(){
-    entrada("\nPressione ENTER para continuar...");
-    console.clear();
-}
-
 function exibirAlunos() {
     console.clear();
     if (alunos.length == 0) {
@@ -26,16 +21,10 @@ function exibirAlunos() {
     }
     console.log("***Exibindo alunos***");
     for (let a = 0; a < alunos.length; a++) {
-        console.log(`--- Aluno ${a + 1} ---`);
-        console.log(`Nome: ${alunos[a].nome}`);
-        console.log(`Idade: ${alunos[a].idade}`);
-        if (alunos[a].disciplinas) {
-            for (let d = 0; d < alunos[a].disciplinas.length; d++) {
-                console.log(`Disciplina: ${alunos[a].disciplinas[d].disciplina}\nNotas: ${alunos[a].disciplinas[d].notas ? alunos[a].disciplinas[d].notas : 'Nennhuma nota cadastrada.'}\nFaltas: ${alunos[a].disciplinas[d].faltas ? alunos[a].disciplinas[d].faltas : "Aluno sem faltas"}\n`);
-            }
-        }
+        console.log(alunos[a].nome);
     }
-    esperaUsuario();
+    entrada("\nPressione ENTER para continuar...");
+    console.clear();
 }
 
 function exibirDisciplinas() {
@@ -79,7 +68,11 @@ function cadastroNotasDisciplina(aluno) {
         console.log("Nenhum aluno cadastrado.\n");
         return;
     }
-    if (alunos.length < 3) {
+    if (disciplinas.length == 0) {
+        console.log("Nenhuma disciplina cadastrada.\n");
+        return;
+    }
+    if (!('disciplinas' in alunos[aluno])) {
         console.log("Alunos sem disciplinas.\n");
         return;
     }
@@ -94,6 +87,87 @@ function cadastroNotasDisciplina(aluno) {
         alunos[aluno].disciplinas[disciplinaSelecionada].notas.push(nota);
     }
 
+}
+
+function cadastroFaltasDisciplinas(aluno) {
+    console.clear();
+    if (alunos.length == 0) {
+        console.log("Nenhum aluno cadastrado.\n");
+        return;
+    }
+    if (disciplinas.length == 0) {
+        console.log("Nenhuma disciplina cadastrada.\n");
+        return;
+    }
+    if (!('disciplinas' in alunos[aluno])) {
+        console.log("Alunos sem disciplinas.\n");
+        return;
+    }
+    console.log("***Exibindo disciplinas do aluno***");
+    let disciplinaSelecionada = exibirDisciplinasAluno(aluno);
+    if (!alunos[aluno].disciplinas[disciplinaSelecionada].faltas) {
+        alunos[aluno].disciplinas[disciplinaSelecionada].faltas = [];
+    }
+    let faltas = parseInt(entrada("Digite a quantidade de faltas: "));
+    alunos[aluno].disciplinas[disciplinaSelecionada].faltas.push(faltas);
+}
+
+function calcularMedia(aluno) {
+    console.clear();
+    if (alunos.length == 0) {
+        console.log("Nenhum aluno cadastrado.\n");
+        return;
+    }
+    if (disciplinas.length == 0) {
+        console.log("Nenhuma disciplina cadastrada.\n");
+        return;
+    }
+    if (!('disciplinas' in alunos[aluno])) {
+        console.log("Alunos sem disciplinas.\n");
+        return;
+    }
+    console.log("1 - Uma única disciplina.\n2 - Todas as disciplinas.\n");
+    const tipoDeMedia = parseInt(entrada("Selecione o tipo de média: "));
+    switch (tipoDeMedia) {
+        case 1:
+            {
+                console.log("***Exibindo disciplinas do aluno***");
+                let disciplinaSelecionada = exibirDisciplinasAluno(aluno);
+                if (!('notas' in alunos[aluno].disciplinas[disciplinaSelecionada])) {
+                    console.log("Disciplina sem nota.\n");
+                    return;
+                }
+                if (alunos[aluno].disciplinas[disciplinaSelecionada].notas.length == 1) {
+                    console.log(`A média do aluno ${alunos[aluno].disciplinas[disciplinaSelecionada].disciplina} é ${alunos[aluno].disciplinas[disciplinaSelecionada].notas[0]}`);
+                    return;
+                }
+                let somaNotas = 0;
+                for (let d = 0; d < alunos[aluno].disciplinas[disciplinaSelecionada].notas.length; d++) {
+                    somaNotas += alunos[aluno].disciplinas[disciplinaSelecionada].notas[d];
+                }
+                const media = somaNotas / alunos[aluno].disciplinas[disciplinaSelecionada].notas.length;
+                console.log(`A média do aluno é ${media.toFixed(1)}`);
+            }
+            break;
+        case 2:
+            {
+                for (let d = 0; d < alunos[aluno].disciplinas.length; d++) {
+                    if (!('notas' in alunos[aluno].disciplinas[d])) {
+                        console.log(`Disciplina ${alunos[aluno].disciplinas[d].disciplina} sem nota.`);
+                        continue;
+                    }
+                    let somaNotas = 0;
+                    for (let n = 0; n < alunos[aluno].disciplinas[d].notas.length; n++) {
+                        somaNotas += alunos[aluno].disciplinas[d].notas[n];
+                    }
+                    const media = somaNotas / alunos[aluno].disciplinas[d].notas.length;
+                    console.log(`A média do(a) aluno(a) em ${alunos[aluno].disciplinas[d].disciplina} é ${media.toFixed(1)}`);
+                }
+            }
+            break;
+        default:
+            console.log("Opção inválida.\n");
+    }
 }
 
 function selecionarAluno() {
@@ -127,8 +201,57 @@ function exibirDisciplinasAluno(alunoID) {
         console.log(`${disciplinaID} - ${alunos[alunoID].disciplinas[d].disciplina}`);
         disciplinaID++;
     }
-    let disciplinaSelecionada = parseInt(entrada("Selecione a disciplina que deseja cadastrar a(s) nota(s): ") - 1);
+    let disciplinaSelecionada = parseInt(entrada("Selecione a disciplina: ") - 1);
     return disciplinaSelecionada;
+}
+
+function boletim() {
+    console.clear();
+    if (alunos.length == 0) {
+        console.log("Nenhum aluno cadastrado.\n");
+        return;
+    }
+    function retornaMedia(notas) {
+        if (notas.length == 1) {
+            return notas[0];
+        }
+        let somaNotas = 0;
+        for (let d = 0; d < notas.length; d++) {
+            somaNotas += notas[d];
+        }
+        const media = somaNotas / notas.length;
+        return media;
+    }
+    const maximoDeFaltas = parseInt(entrada("Digite o máximo de faltas permitidas: "));
+    const mediaMinima = parseInt(entrada("Digite a média mínima: "));
+    console.clear();
+    console.log("*** BOLETIM ***");
+    for (let a = 0; a < alunos.length; a++) {
+        console.log(`--- Estudante ${a + 1} ---`);
+        console.log(`Nome: ${alunos[a].nome}`);
+        console.log(`Idade: ${alunos[a].idade}`);
+        if (alunos[a].disciplinas) {
+            for (let d = 0; d < alunos[a].disciplinas.length; d++) {
+                console.log(`Disciplina: ${alunos[a].disciplinas[d].disciplina}`);
+                console.log(`Nota(s): ${alunos[a].disciplinas[d].notas ? alunos[a].disciplinas[d].notas : 'Nennhuma nota cadastrada.'}`);
+                var media = 0;
+                if (alunos[a].disciplinas[d].notas) {
+                    media = retornaMedia(alunos[a].disciplinas[d].notas);
+                    console.log(`A média do(a) aluno(a) em ${alunos[a].disciplinas[d].disciplina} é ${media.toFixed(1)}`);
+                }
+                console.log(`Falta(s): ${alunos[a].disciplinas[d].faltas ? alunos[a].disciplinas[d].faltas : "Aluno(a) sem faltas"}`);
+                if (alunos[a].disciplinas[d].notas && media < mediaMinima) {
+                    console.log('Status: Reprovado(a) por média');
+                } else if (alunos[a].disciplinas[d].faltas && alunos[a].disciplinas[d].faltas > maximoDeFaltas) {
+                    console.log('Status: Reprovado(a) por falta');
+                } else if (alunos[a].disciplinas[d].notas && media >= mediaMinima || alunos[a].disciplinas[d].faltas && alunos[a].disciplinas[d].faltas > maximoDeFaltas) {
+                    console.log('Status: Aprovado(a)');
+                }
+            }
+        }
+    }
+    entrada("\nPressione ENTER para continuar...");
+    console.clear();
 }
 
 let sair = false;
@@ -167,8 +290,9 @@ function menuAlunos() {
         console.log("4. Cadastrar Nota para Disciplina");
         console.log("5. Cadastrar Falta para Disciplina");
         console.log("6. Calcular Média");
-        console.log("7. Voltar");
-        console.log("8. Sair");
+        console.log("7. Boletim");
+        console.log("8. Voltar");
+        console.log("9. Sair");
         let submenu = parseInt(entrada("Escolha uma opçõa: "));
         switch (submenu) {
             case 1:
@@ -196,18 +320,30 @@ function menuAlunos() {
                 break;
             case 5:
                 console.clear();
+                {
+                    let alunoEscolhido = selecionarAluno();
+                    cadastroFaltasDisciplinas(alunoEscolhido);
+                }
                 break;
             case 6:
-                console.log("Calculando média");
+                console.clear();
+                {
+                    let alunoEscolhido = selecionarAluno();
+                    calcularMedia(alunoEscolhido);
+                }
                 break;
             case 7:
-                menuIniciar();
+                boletim();
                 break;
             case 8:
+                menuIniciar();
+                break;
+            case 9:
                 console.log("Encerrando sistema.\n");
                 sair = true;
                 break;
             default:
+                console.clear();
                 console.log("Opção inválida.\n");
         }
     }
@@ -240,6 +376,7 @@ function menuDisciplinas() {
                 sair = true;
                 break;
             default:
+                console.clear();
                 console.log("Opção inválida.\n");
         }
     }
